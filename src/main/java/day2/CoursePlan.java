@@ -7,7 +7,7 @@ import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Commands {
+public class CoursePlan {
     public static List<String> generate(String filename) {
         List<String> resultList = new ArrayList<>();
         final String path = FileSystems.getDefault().getPath("").toAbsolutePath().toString().concat("\\src\\main\\java\\day2\\" + filename);
