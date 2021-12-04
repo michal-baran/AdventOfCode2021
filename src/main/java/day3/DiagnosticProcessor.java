@@ -9,27 +9,33 @@ public class DiagnosticProcessor {
     }
 
     public int calculatePowerConsupmtion(List<String> report) {
-        int rowLength = report.get(0).length();
-        int[] numOfOnes = new int[rowLength];
-        int gammaRate = 0;
-        int epsilonRate = 0;
-
-        //Sum every "ones" on each bit
-        for (String s : report) {
-            for (int i = 0; i < rowLength; i++) {
-                numOfOnes[i] += (s.charAt(i) == '1' ? 1 : 0);
-            }
-        }
-
-        for (int i = 0; i < rowLength; i++) {
-            double valueOnBit = Math.pow(2, rowLength - 1 - i);
-            int numOfZeros = report.size() - numOfOnes[i];
-            if (numOfOnes[i] > numOfZeros) {
-                gammaRate += valueOnBit;
-            } else {
-                epsilonRate += valueOnBit;
-            }
-        }
+        int gammaRate = binaryToInt(calculateRate(report, '1'), report.size());
+        int epsilonRate = binaryToInt(calculateRate(report, '0'), report.size());
         return gammaRate * epsilonRate;
     }
+
+    public static int[] calculateRate(List<String> report, char bitChar) {
+        int rowLength = report.get(0).length();
+        int[] numOfBits = new int[rowLength];
+
+        for (String s : report) {
+            for (int i = 0; i < rowLength; i++) {
+                numOfBits[i] += (s.charAt(i) == bitChar ? 1 : 0);
+            }
+        }
+        return numOfBits;
+    }
+
+    public static int binaryToInt(int[] binaryValue, int reportSize) {
+        int intValue = 0;
+        for (int i = 0; i < binaryValue.length; i++) {
+            double valueOnBit = Math.pow(2, binaryValue.length - 1 - i);
+            if (binaryValue[i] > reportSize - binaryValue[i]) {
+                intValue += valueOnBit;
+            }
+        }
+        return intValue;
+    }
+
+
 }
