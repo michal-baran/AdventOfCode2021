@@ -9,15 +9,17 @@ import java.util.List;
 public class Utils {
     public static List<String> readInput(String filename) {
         List<String> resultList = new ArrayList();
-        final String path = FileSystems.getDefault().getPath("").toAbsolutePath().toString().concat("\\src\\main\\java\\day4\\" + filename);
+        final String path = FileSystems.getDefault().getPath("").toAbsolutePath().toString().concat("\\src\\main\\java\\com\\advent\\of\\code\\" + filename);
+
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
             String currentLine;
             while ((currentLine = bufferedReader.readLine()) != null) {
                 resultList.add(currentLine);
             }
-            return resultList;
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        return resultList;
     }
 }
