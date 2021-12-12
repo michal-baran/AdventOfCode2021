@@ -21,7 +21,7 @@ public class CrabSubmarines {
         for (int i = minValue; i <= maxValue; i++) {
             int fuelForPosition = 0;
             for (Integer value : horizontalPositions) {
-                fuelForPosition += Math.abs(value - i);
+                fuelForPosition += factorial(Math.abs(value - i));
             }
             if (fuelForPosition < optimumFuel) {
                 optimumFuel = fuelForPosition;
@@ -39,5 +39,13 @@ public class CrabSubmarines {
                 maxValue = value;
             }
         }
+    }
+
+    private long factorial(int value) {
+        long sum = 0;
+        for (int i = 1; i <= value; i++) {
+            sum += i;
+        }
+        return sum;
     }
 }
