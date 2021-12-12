@@ -1,4 +1,4 @@
-package day3;
+package com.advent.of.code.day3;
 
 import java.util.ArrayList;
 import java.util.List;
