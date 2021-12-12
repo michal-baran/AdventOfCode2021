@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Submarine {
     public static void main(String[] args) {
-        List<String> course = CoursePlan.generate("input.txt");
+        List<String> course = CoursePlan.generate("day6/input.txt");
         System.out.println(calculatePosition(course));
         System.out.println(calculatePositionWithAim(course));
     }
