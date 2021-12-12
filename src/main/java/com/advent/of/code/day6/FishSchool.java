@@ -1,33 +1,34 @@
 package com.advent.of.code.day6;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public class FishSchool {
-    private List<Fish> fishes;
+    private long[] fishes = new long[9];
 
-    public FishSchool(String fishesCounters) {
-        this.fishes = Stream.of(fishesCounters.split(","))
-                .map(item -> new Fish(Integer.parseInt(item)))
-                .collect(Collectors.toList());
+    public FishSchool(String inputString) {
+        for (String value : inputString.split(",")) {
+            fishes[Integer.parseInt(value)]++;
+        }
     }
 
     public FishSchool simulateOverTime(int maxDays) {
         for (int actDay = 1; actDay <= maxDays; actDay++) {
-            int initialSize = fishes.size();
-            for (int i = 0; i < initialSize; i++) {
-                Fish fish = fishes.get(i);
-                if (fish.decreaseCount()) {
-                    fishes.add(new Fish(8));
+            long newFishes = 0;
+            for (int i = 0; i < fishes.length - 1; i++) {
+                if (i == 0) {
+                    newFishes = fishes[0];
                 }
+                fishes[i] = fishes[i + 1];
             }
+            fishes[6] += newFishes;
+            fishes[8] = newFishes;
         }
         return this;
     }
 
     public long countFishes() {
-        return fishes.size();
-
+        long result = 0;
+        for (long fishCount : fishes) {
+            result += fishCount;
+        }
+        return result;
     }
 }
