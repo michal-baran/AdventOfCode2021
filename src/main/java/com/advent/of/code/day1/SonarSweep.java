@@ -27,7 +27,7 @@ public class SonarSweep {
     }
 
     public static void main(String[] args) {
-        List<Integer> measurements = Measurements.generate("input.txt");
+        List<Integer> measurements = Measurements.generate("day6/input.txt");
         System.out.println(countIncreases(measurements));
         System.out.println(slidingWindow(measurements));
     }
