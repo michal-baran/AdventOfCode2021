@@ -20,4 +20,16 @@ public class Utils {
         }
         return resultList;
     }
+
+    public static String readLine(String filename) {
+        String resultLine;
+        final String path = FileSystems.getDefault().getPath("").toAbsolutePath().toString().concat("\\src\\test\\java\\com\\advent\\of\\code\\" + filename);
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
+            resultLine = bufferedReader.readLine();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return resultLine;
+    }
 }
