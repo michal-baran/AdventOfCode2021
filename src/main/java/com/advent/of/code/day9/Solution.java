@@ -13,6 +13,7 @@ public class Solution {
         List<String> inputData = Utils.readInput("day9\\input.txt");
         Cave cave = new Cave(inputData);
 
-        logger.info(cave.findLocations().getRiskLevelsSum().toString());
+        logger.info(cave.getRiskLevelsSum().toString());
+        logger.info(cave.getLargestBasinsSize().toString());
     }
 }

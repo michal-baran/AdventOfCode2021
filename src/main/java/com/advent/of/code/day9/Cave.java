@@ -1,43 +1,91 @@
 package com.advent.of.code.day9;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Cave {
-    private final int[][] heightMap;
-    List<Location> locations = new ArrayList<>();
+    private Location[][] locations;
+    private List<Location> lowLocations = new ArrayList<>();
+    private Map<Location, List<Location>> basins = new HashMap<>();
+    private Location actualCheckedBasin;
 
     public Cave(List<String> inputData) {
-        this.heightMap = new int[inputData.size() + 2][inputData.get(0).length() + 2];
-        Arrays.stream(heightMap).forEach(a -> Arrays.fill(a, 9));
-
-        for (int i = 0; i < inputData.size(); i++) {
-            for (int j = 0; j < inputData.get(i).length(); j++) {
-                this.heightMap[i + 1][j + 1] = Integer.parseInt(inputData.get(i).substring(j, j + 1));
+        locations = new Location[inputData.size()][inputData.get(0).length()];
+        for (int row = 0; row < inputData.size(); row++) {
+            for (int column = 0; column < inputData.get(row).length(); column++) {
+                locations[row][column] = new Location(row, column, inputData.get(row).charAt(column));
             }
         }
+        setLowLocations();
+        setBasins();
     }
 
-    public Cave findLocations() {
-        for (int i = 1; i < heightMap.length - 1; i++) {
-            for (int j = 1; j < heightMap[i].length - 1; j++) {
-                int heightAtLocation = heightMap[i][j];
-                if ((heightAtLocation < heightMap[i - 1][j]) &&
-                        (heightAtLocation < heightMap[i - 1][j - 1]) &&
-                        (heightAtLocation < heightMap[i][j - 1]) &&
-                        (heightAtLocation < heightMap[i + 1][j]) &&
-                        (heightAtLocation < heightMap[i + 1][j + 1]) &&
-                        (heightAtLocation < heightMap[i][j + 1])) {
-                    locations.add(new Location(i, j, heightAtLocation));
+    private void setLowLocations() {
+        int[][] arr = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+        for (int y = 0; y < locations.length; y++) {
+            for (int x = 0; x < locations[y].length; x++) {
+                boolean isLow = true;
+                for (int[] values : arr) {
+                    int y1 = y + values[0];
+                    int x1 = x + values[1];
+                    if (y1 >= 0 && y1 < locations.length && x1 >= 0 && x1 < locations[y].length) {
+                        Location checkedLocation = locations[y + values[0]][x + values[1]];
+                        if (locations[y][x].getHeight() > checkedLocation.getHeight()) {
+                            isLow = false;
+                        }
+                    }
+                }
+                if (isLow) {
+                    lowLocations.add(locations[y][x]);
                 }
             }
         }
-        return this;
+    }
+
+    private void setBasins() {
+        for (Location location : lowLocations) {
+            actualCheckedBasin = location;
+            basins.put(actualCheckedBasin, new ArrayList<>());
+            setBasinFromLocation(location);
+        }
+    }
+
+    private void setBasinFromLocation(Location location) {
+        int[][] arr = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+        int y = location.getY();
+        int x = location.getX();
+
+        for (int[] values : arr) {
+            int y1 = y + values[0];
+            int x1 = x + values[1];
+            if (y1 >= 0 && y1 < locations.length && x1 >= 0 && x1 < locations[y].length) {
+                Location checkedLocation = locations[y1][x1];
+
+                if (checkedLocation.getHeight() < 9 && !checkedLocation.isVisited()) {
+                    checkedLocation.setVisited();
+                    basins.get(actualCheckedBasin).add(checkedLocation);
+                    setBasinFromLocation(checkedLocation);
+                }
+            }
+        }
     }
 
     public Integer getRiskLevelsSum() {
-        System.out.println("Low points count: " + locations.size());
-        return locations.stream().map(Location::getRiskLevel).mapToInt(Integer::intValue).sum();
+        return lowLocations.stream().map(Location::getRiskLevel).mapToInt(Integer::intValue).sum();
+    }
+
+    public Integer getLargestBasinsSize() {
+        int[] basinSizes = new int[basins.size()];
+        int result = 1;
+        int i = 0;
+        for (Map.Entry<Location, List<Location>> entry : basins.entrySet()) {
+            basinSizes[i] = entry.getValue().size();
+            i++;
+        }
+        Arrays.sort(basinSizes);
+
+        for (int j = basins.size() - 1; j > basins.size() - 4; j--) {
+            result *= basinSizes[j];
+        }
+        return result;
     }
 }
